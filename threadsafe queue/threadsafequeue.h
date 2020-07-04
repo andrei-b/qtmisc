@@ -52,7 +52,7 @@ public:
 
     bool tryPop(T& value)
     {
-        QMutexLocker lk(m_mutex);
+        QMutexLocker lk(&m_mutex);
         if(m_queue.empty)
             return false;
         value=m_queue.front();
@@ -62,7 +62,7 @@ public:
 
     QSharedPointer<T> tryPop()
     {
-        QMutexLocker lk(m_mutex);
+        QMutexLocker lk(&m_mutex);
         if(m_queue.empty())
             return std::shared_ptr<T>();
         QSharedPointer<T> res(new T(m_queue.front()));
@@ -72,7 +72,7 @@ public:
 
     bool empty() const
     {
-        QMutexLocker lk(m_mutex);
+        QMutexLocker lk(&m_mutex);
         return m_queue.empty();
     }
 };

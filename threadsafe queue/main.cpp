@@ -24,9 +24,8 @@ void pushData()
 
 void popData()
 {
-    for(int i = 0; i < 1024; i++) {
-        auto msg = *q.pop().get();
-        std::cout << msg.toStdString() << std::endl;
+    for(int i = 0; i < 2048; i++) {
+        std::cout << q.pop()->toStdString() << std::endl;
     }
 }
 
@@ -34,6 +33,8 @@ int main()
 {
     std::thread t1(&pushData);
     std::thread t2(&popData);
+    std::thread t3(&pushData);
     t1.join();
     t2.join();
+    t3.join();
 }

@@ -1,9 +1,6 @@
 #include "threadsafequeue.h"
 #include <QString>
-#include <mutex>
-#include <condition_variable>
-#include <queue>
-#include <memory>
+#include <QtConcurrent>
 #include <string>
 #include <thread>
 #include <iostream>
@@ -12,11 +9,11 @@ typedef ThreadSafeQueue<QString> TSQueue;
 
 static TSQueue q;
 
-void pushData()
+void pushData(int n)
 {
     using namespace std::chrono_literals;
     for(int i = 0; i < 1024; i++) {
-        QString msg = QString("message #%1").arg(i);
+        QString msg = QString("%1: message #%2").arg(n).arg(i);
         q.push(msg);
         std::this_thread::sleep_for(1000ns);
     }
@@ -29,7 +26,15 @@ void popData()
     }
 }
 
+
 int main()
+{
+    QtConcurrent::run(&pushData, 1);
+    QtConcurrent::run(&pushData, 2);
+    QtConcurrent::run(&popData);
+}
+
+/*int main()
 {
     std::thread t1(&pushData);
     std::thread t2(&popData);
@@ -37,4 +42,4 @@ int main()
     t1.join();
     t2.join();
     t3.join();
-}
+}*/
